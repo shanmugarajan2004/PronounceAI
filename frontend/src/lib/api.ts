@@ -1,6 +1,19 @@
 import { ConsentResponse, PronunciationAnalysisResponse } from '../types/analysis';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+let rawUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// 1. Remove any trailing slash
+if (rawUrl.endsWith('/')) {
+  rawUrl = rawUrl.slice(0, -1);
+}
+
+// 2. Prepend https:// if protocol is missing entirely (prevents relative path bugs)
+if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+  rawUrl = `https://${rawUrl}`;
+}
+
+// 3. Ensure it terminates with the /api/v1 prefix
+const BASE_URL = rawUrl.endsWith('/api/v1') ? rawUrl : `${rawUrl}/api/v1`;
 
 export async function submitConsent(
   consentGiven: boolean,
