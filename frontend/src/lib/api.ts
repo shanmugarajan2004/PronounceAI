@@ -65,7 +65,7 @@ export function analyzeSpeech(
     let fileName = 'recording.webm';
     if (audioBlob.type.includes('wav')) fileName = 'recording.wav';
     else if (audioBlob.type.includes('mp3')) fileName = 'recording.mp3';
-    else if (audioBlob.type.includes('m4a')) fileName = 'recording.m4a';
+    else if (audioBlob.type.includes('m4a') || audioBlob.type.includes('mp4')) fileName = 'recording.m4a';
 
     formData.append('audio_file', audioBlob, fileName);
     formData.append('consent_id', consentId);

@@ -66,17 +66,24 @@ export function useAudioRecorder() {
         console.warn('AudioContext visualization not supported:', err);
       }
 
-      // Check supported recording mime types
-      let options = { mimeType: 'audio/webm' };
+      // Check supported recording mime types. Omit options entirely if none match,
+      // letting the browser auto-fallback to its native format (e.g. audio/mp4 on iOS Safari).
+      let options: any = {};
       if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
         options = { mimeType: 'audio/webm;codecs=opus' };
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        options = { mimeType: 'audio/mp4' };
+      } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+        options = { mimeType: 'audio/webm' };
       } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
         options = { mimeType: 'audio/ogg;codecs=opus' };
       } else if (MediaRecorder.isTypeSupported('audio/wav')) {
         options = { mimeType: 'audio/wav' };
       }
 
-      const mediaRecorder = new MediaRecorder(stream, options);
+      const mediaRecorder = Object.keys(options).length > 0
+        ? new MediaRecorder(stream, options)
+        : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       
       const chunks: BlobPart[] = [];
