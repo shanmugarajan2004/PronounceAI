@@ -180,6 +180,30 @@ export default function AudioUploader({ consentId, onAnalysisComplete }: AudioUp
               </div>
             )}
 
+            {/* Permission Denied State */}
+            {status === 'permission_denied' && (
+              <div className="space-y-6 py-4 max-w-md mx-auto">
+                <div className="mx-auto bg-rose-500/10 p-4 w-16 h-16 rounded-2xl flex items-center justify-center border border-rose-500/20 shadow-inner mb-4 animate-bounce">
+                  <AlertCircle className="w-8 h-8 text-rose-400" />
+                </div>
+                <h3 className="font-bold text-white tracking-tight text-lg">Microphone Access Denied</h3>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  We need microphone access to record your voice directly. Please enable microphone permissions in your browser or device settings, or upload a pre-recorded file instead.
+                </p>
+                <div className="bg-black/30 p-4 rounded-xl border border-white/5 text-left text-[11px] text-neutral-400 space-y-1">
+                  <p className="font-semibold text-neutral-300">How to enable on mobile:</p>
+                  <p>• <strong>iOS Safari</strong>: Settings &gt; Safari &gt; Microphone &gt; Allow.</p>
+                  <p>• <strong>Android Chrome</strong>: Settings &gt; Site Settings &gt; Microphone &gt; Allow.</p>
+                </div>
+                <button
+                  onClick={resetRecorder}
+                  className="mx-auto flex items-center space-x-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-neutral-300 rounded-xl text-sm font-bold transition-all duration-300 active:scale-98"
+                >
+                  <span>Go Back & Try File Upload</span>
+                </button>
+              </div>
+            )}
+
             {/* Active Recording State */}
             {status === 'recording' && (
               <div className="space-y-8 py-4">
