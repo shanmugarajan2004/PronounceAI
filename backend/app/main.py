@@ -13,10 +13,33 @@ app = FastAPI(
 
 # Configure CORS Middleware
 # Allows safe cross-origin resource sharing with configured origins (e.g. localhost, Vercel frontend)
+origins = settings.ALLOWED_ORIGINS
+import os
+import json
+env_cors = os.environ.get("CORS_ORIGINS") or os.environ.get("ALLOWED_ORIGINS")
+if env_cors:
+    try:
+        # Try parsing as JSON list
+        parsed = json.loads(env_cors)
+        if isinstance(parsed, list):
+            origins = parsed
+        else:
+            origins = [str(parsed)]
+    except Exception:
+        # Fallback to comma-separated list
+        origins = [o.strip() for o in env_cors.split(",") if o.strip()]
+
+# Wildcards "*" cannot be used with allow_credentials=True in CORS standards
+allow_credentials = True
+if "*" in origins or not origins:
+    allow_credentials = False
+    if not origins:
+        origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
